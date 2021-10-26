@@ -16,10 +16,3 @@ class User(db.Base):
 
     def check_password(self, password: str):
         return hash.bcrypt.verify(password, self.password)
-class Post(db.Base):
-    __tablename__ = "posts"
-    id = sql.Column(sql.Integer, primary_key=True, index=True)
-    user_id = sql.Column(sql.Integer, sql.ForeignKey("users.id"))
-    post_body = sql.Column(sql.String, index=True)
-    date_created = sql.Column(sql.DateTime, default=dt.datetime.utcnow)
-    owner = orm.relationship("User", back_populates="posts")
