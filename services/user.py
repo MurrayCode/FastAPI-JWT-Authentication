@@ -1,27 +1,16 @@
-import fastapi as fastapi
-import fastapi.security as security
-import database as db
-import sqlalchemy.orm as orm
-import jwt as jwt
-import schemas.post_schema as post_schema
 import schemas.user_schema as user_schema
 import models as models
 import email_validator as validate_email
+import sqlalchemy.orm as orm
+import fastapi as fastapi
+import fastapi.security as security
+import jwt as jwt
+import services.database as database
 import passlib.hash as hash
 
+JWT_SECRET = "PLACEHOLDER"
 oauth2schema = security.OAuth2PasswordBearer("/api/token")
 
-JWT_SECRET = "PLACEHOLDER"
-
-def create_database():
-    return db.Base.metadata.create_all(bind=db.engine)
-
-def get_db():
-    database = db.SessionLocal()
-    try:
-        yield database
-    finally:
-        database.close()
 
 async def get_user_by_email(email: str, db: orm.Session):
     return db.query(models.User).filter(models.User.email == email).first()
@@ -49,30 +38,10 @@ async def authenticate_user(email: str, password: str, db: orm.Session):
     
     return user
 
-async def create_token(user: models.User):
-    user_object = user_schema.User.from_orm(user)
-    user_dict = user_object.dict()
-    del user_dict["date_created"]
-
-    token = jwt.encode(user_dict, JWT_SECRET)
-    return dict(access_token=token, token_type="bearer")
-
-async def get_current_user(db: orm.Session = fastapi.Depends(get_db), token: str = fastapi.Depends(oauth2schema)):
+async def get_current_user(db: orm.Session = fastapi.Depends(database.get_db), token: str = fastapi.Depends(oauth2schema)):
     try:
         payload = jwt.decode(token, JWT_SECRET, algorithms = ["HS256"])
         user = db.query(models.User).get(payload["id"])
     except:
         raise fastapi.HTTPException(status_code=401, detail="Incorrect email or password")
     return user_schema.User.from_orm(user)
-
-async def create_post(user: user_schema.User, db: orm.Session, post: post_schema.PostCreate):
-    post = models.Post(**post.dict(), user_id=user.id)
-    db.add(post)
-    db.commit()
-    db.refresh(post)
-    return post_schema.Post.from_orm(post)
-
-async def get_user_posts(user: user_schema.User, db: orm.Session):
-    posts = db.query(models.Post).filter_by(user_id=user.id)
-    return list(map(post_schema.Post.from_orm, posts))
-
