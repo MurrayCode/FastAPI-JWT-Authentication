@@ -25,7 +25,7 @@ async def create_user(user: user_schema, db: orm.Session):
     except validate_email.EmailNotValidError:
         raise fastapi.HTTPException(status_code=404, detail="Please enter a correct email address")
 
-    user_object = user_models.User(email = email,name = name, password = hash.bcrypt.hash(user.password))
+    user_object = user_models.User(email = email, name = name, password = hash.bcrypt.hash(user.password))
     db.add(user_object)
     db.commit()
     db.refresh(user_object)

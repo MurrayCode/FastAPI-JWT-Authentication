@@ -15,3 +15,6 @@ async def get_user_posts(user: user_schema.User, db: orm.Session):
     posts = db.query(post_models.Post).filter_by(user_id=user.id)
     return list(map(post_schema.Post.from_orm, posts))
 
+async def get_post_by_id(id: int, user: user_schema.User, db: orm.Session):
+    post = db.query(post_models.Post).filter_by(user_id=user.id, id=id)
+    return list(map(post_schema.Post.from_orm, post))

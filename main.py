@@ -54,3 +54,10 @@ async def get_user_posts(
 ):
     return await post_services.get_user_posts(user=user, db=db)
 
+@app.get("/api/my-posts/{post_id}", response_model=List[post_schema.Post])
+async def get_post(
+    post_id, 
+    user: user_schema.User = fastapi.Depends(user_services.get_current_user),
+    db: orm.Session = fastapi.Depends(db_services.get_db)
+):
+    return await post_services.get_post_by_id(id=post_id, user=user, db=db)
