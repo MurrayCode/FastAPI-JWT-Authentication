@@ -8,7 +8,9 @@ import jwt as jwt
 import services.database as database
 import passlib.hash as hash
 
+#TODO swap to env variable
 JWT_SECRET = "PLACEHOLDER"
+
 oauth2schema = security.OAuth2PasswordBearer("/api/token")
 
 

@@ -2,6 +2,7 @@ import models.user as user_models
 import schemas.user_schema as user_schema
 import jwt as jwt
 
+#TODO replace with env variable
 JWT_SECRET = "PLACEHOLDER"
 
 async def create_token(user: user_models.User):
