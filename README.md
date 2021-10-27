@@ -14,4 +14,5 @@ Create Database
         services.database.create_database()
 
 Run Server
+    Make sure venv is activated (source venv/bin activate)
     Run start.sh in terminal (./start.sh)
