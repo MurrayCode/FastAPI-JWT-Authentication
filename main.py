@@ -2,7 +2,6 @@ from typing import List
 import fastapi as fastapi
 import fastapi.security as security
 import sqlalchemy.orm as orm
-from sqlalchemy.sql.functions import user
 import services.database as db_services
 import services.user as user_services
 import services.post as post_services
