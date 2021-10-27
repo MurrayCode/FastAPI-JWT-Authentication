@@ -16,5 +16,5 @@ Create Database
 
 Run Server
 
-    Make sure venv is activated (source venv/bin activate)
+    Make sure venv is activated (source venv/bin/activate)
     Run start.sh in terminal (./start.sh)
